@@ -9,11 +9,16 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
 
+//Los controladores se espera que no manejen logica solo regresar una respuesta del usuario
+
 @Controller('cars')
+//@UsePipes(ValidationPipe)
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
@@ -29,7 +34,8 @@ export class CarsController {
 
   @Post()
   createCar(@Body() createCarDto: CreateCarDto) {
-    return createCarDto;
+    //Recibimos la informacion createCarDto y se lo pasamos al servicio
+    return this.carsService.create(createCarDto);
   }
 
   @Patch(':id')

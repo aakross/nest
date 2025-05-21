@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
+import { UpdateCarDto } from './dto/update-car.dto';
 
 //Los controladores se espera que no manejen logica solo regresar una respuesta del usuario
 
@@ -40,18 +41,19 @@ export class CarsController {
 
   @Patch(':id')
   UpdateCar(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body()
-    body: any,
+    updateCarDto: UpdateCarDto,
   ) {
-    return body;
+    return this.carsService.update(id, updateCarDto);
   }
 
   @Delete(':id')
-  deleteCar(@Param('id', ParseIntPipe) id: number) {
-    return {
-      method: 'delete',
-      id,
-    };
+  deleteCar(@Param('id', ParseUUIDPipe) id: string) {
+    return this.carsService.delete(id);
+    // return {
+    //   method: 'delete',
+    //   id,
+    // };
   }
 }

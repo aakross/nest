@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { car } from './interfaces/car.interface';
 import { v4 as uuid } from 'uuid';
-import { CreateCarDto } from './dto/create-car.dto';
+import { CreateCarDto, UpdateCarDto } from './dto/index';
 
 @Injectable()
 export class CarsService {
@@ -33,5 +37,24 @@ export class CarsService {
     };
     this.cars.push(car);
     return car;
+  }
+
+  update(id: string, updateCarDto: UpdateCarDto) {
+    let carDB = this.findOneById(id);
+    if (updateCarDto.id && updateCarDto.id !== id)
+      throw new BadRequestException('Car id is not valid');
+    this.cars = this.cars.map((car) => {
+      if (car.id === id) {
+        carDB = { ...carDB, ...updateCarDto, id };
+        return carDB;
+      }
+      return car;
+    });
+    return carDB;
+  }
+
+  delete(id: string) {
+    const car = this.findOneById(id);
+    this.cars = this.cars.filter((car) => car.id !== id);
   }
 }
